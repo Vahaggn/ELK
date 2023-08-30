@@ -24,5 +24,6 @@ answer :
                 "message": "{\"menu\":{\"id\":\"file\",\"value\":\"File\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Save\",\"onclick\":\"SaveDoc()\"}]}}}"
             }
         ]
-
+# this is a good link too :
+# https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
 ###########################################################################################################
