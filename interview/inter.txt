@@ -1,0 +1,28 @@
+#########################################################################################################
+question : 
+    Write a Logstash filter which can parse following log
+        2023-06-10T18:45:05+00:00 logger:mainserver
+        {"menu":{"id":"file","value":"File","popup":{"menuitem":[{"value":"New","onclick":"CreateDo
+        c()"},{"value":"Open","onclick":"OpenDoc()"},{"value":"Save","onclick":"SaveDoc()"}]}}}
+
+answer :
+    i use from this site :
+        https://grokdebugger.com/
+            i set Grok Pattern :
+                %{TIMESTAMP_ISO8601:timestamp} %{WORD:logger}:%{WORD:server} %{GREEDYDATA:message}
+            i set Samples :
+                2023-06-10T18:45:05+00:00 logger:mainserver
+                {"menu":{"id":"file","value":"File","popup":{"menuitem":[{"value":"New","onclick":"CreateDo
+                c()"},{"value":"Open","onclick":"OpenDoc()"},{"value":"Save","onclick":"SaveDoc()"}]}}}
+        
+    then , this is answer :
+        [
+            {
+                "timestamp": "2023-06-10T18:45:05+00:00",
+                "logger": "logger",
+                "server": "mainserver",
+                "message": "{\"menu\":{\"id\":\"file\",\"value\":\"File\",\"popup\":{\"menuitem\":[{\"value\":\"New\",\"onclick\":\"CreateDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Save\",\"onclick\":\"SaveDoc()\"}]}}}"
+            }
+        ]
+
+###########################################################################################################
