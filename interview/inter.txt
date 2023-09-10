@@ -5,7 +5,7 @@ question :
         {"menu":{"id":"file","value":"File","popup":{"menuitem":[{"value":"New","onclick":"CreateDo
         c()"},{"value":"Open","onclick":"OpenDoc()"},{"value":"Save","onclick":"SaveDoc()"}]}}}
 
-answer :
+answer 1:
     i use from this site :
         https://grokdebugger.com/
             i set Grok Pattern :
@@ -26,4 +26,61 @@ answer :
         ]
 # this is a good link too :
 # https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
+
+#########################################################################################################
+
+answer 2: (Recommanded)
+    i prefer to use this one (since this logstash patter is much more easier to simple,faster and if a field add later you should not change you parsing)
+        https://grokdebugger.com/
+        https://github.com/hpcugent/logstash-patterns/blob/master/files/grok-patterns
+            i set Grok Pattern :
+            filter {
+                grok {
+                    match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{WORD:logger}:%{WORD:server}%{SPACE}%{GREEDYDATA:JSON}"}
+                    json{
+                        source => "JSON"
+                        target => "Parsed_JSON"
+                        }
+                        if "_grokparsefailure" in [tags] {
+                            mutate { add_field => { "_grok" => "failed" } }
+                        }
+                    }
+                }
+                
+                
+            i set Samples :
+                2023-06-10T18:45:05+00:00 logger:mainserver
+                {"menu":{"id":"file","value":"File","popup":{"menuitem":[{"value":"New","onclick":"CreateDo
+                c()"},{"value":"Open","onclick":"OpenDoc()"},{"value":"Save","onclick":"SaveDoc()"}]}}}
+        
+    then , this is answer (difference between answer 1 and 2 is that, second of you can see custom field per your json and do search much more easier like Parsed_JSON.menu.value):
+        [
+            {
+                "timestamp": "2023-06-10T18:45:05+00:00",
+                "logger": "logger",
+                "server": "mainserver",
+                "Parsed_JSON": "{
+                    "menu": {
+                        "id": "file",
+                        "value": "File",
+                        "popup": {
+                            "menuitem": [
+                                {
+                                    "value": "New",
+                                    "onclick": "CreateDoc()"
+                                    },
+                                    {
+                                        "value": "Open",
+                                        "onclick": "OpenDoc()"
+                                        },
+                                        {
+                                            "value": "Save",
+                                            "onclick": "SaveDoc()"
+                                        }
+                                ]
+                        }
+                    }
+                }"
+            }
+        ]
 ###########################################################################################################
